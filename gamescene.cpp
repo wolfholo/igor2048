@@ -47,7 +47,7 @@ bool gamescene::init()
 	mult=order;////////////////////////////////////////////////////////
 	ssize=size;
 	squareg=probaility;
-
+	gquantity=iquantity;
 	srand(time(0));
 	squareSize = visibleSize.width *0.95f/ mult;
 	auto snumbern = LabelTTF::create("score:","MarkerFelt-Thin", visibleSize.width/10);  
@@ -66,8 +66,10 @@ bool gamescene::init()
 	createsquare(visibleSize);  
 
 	// 调用生成随机数  
-	autoCreatesquareNumber();  
-	autoCreatesquareNumber(); 
+	for(int q=1;q<=gquantity+1;q++)
+		autoCreatesquareNumber();  
+
+
 
 	auto keyboardListener = EventListenerKeyboard::create();
 	keyboardListener->onKeyPressed = CC_CALLBACK_2(gamescene::keyPressed, this);
@@ -83,47 +85,44 @@ bool gamescene::init()
 
 void gamescene::keyPressed(EventKeyboard::KeyCode keyCode,Event *event)
 {
+	bool isdo=false;
 	if (keyCode == EventKeyboard::KeyCode::KEY_W||
 		keyCode == EventKeyboard::KeyCode::KEY_UP_ARROW)
 	{
-		if(doUp())
-		{  
-			autoCreatesquareNumber();  
-			CheckGameOver(); 
 
-		}
+			isdo=doUp();
+		
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_A||
 		keyCode == EventKeyboard::KeyCode::KEY_LEFT_ARROW)
 	{
-		if(doLeft())
-		{  
-			autoCreatesquareNumber();
-			CheckGameOver(); 
 
-		}
+			isdo=doLeft();
+
+		
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_D||
 		keyCode == EventKeyboard::KeyCode::KEY_RIGHT_ARROW)
 	{
-		if(doRight())
-		{  
-			autoCreatesquareNumber(); 
-			CheckGameOver(); 
 
-		}
+			isdo=doRight();
+
+		
 	}
 	else if (keyCode == EventKeyboard::KeyCode::KEY_S||
 		keyCode == EventKeyboard::KeyCode::KEY_DOWN_ARROW)
 	{
-		if(doDown())
-		{  
-			autoCreatesquareNumber();  
-			CheckGameOver(); 
 
-		}
+			isdo=doDown();
+
+		
 	}
-
+	if(isdo==true)
+	{
+		for(int q=1;q<=gquantity;q++)
+			autoCreatesquareNumber();  
+		CheckGameOver(); 
+	}
 }
 
 bool gamescene::onTouchBegan(Touch *touch, Event *event)
@@ -145,45 +144,45 @@ void gamescene::onTouchEnded(Touch *touch, Event *event)
 	offsetY = endPt.y - startPt.y;
 	bool isTouch = false; 
 
-//	if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
-//	{
-		if (abs(offsetX) > abs(offsetY))
-		{
-			if (offsetX < -5)
-				isTouch = doLeft();
-			else if (offsetX > 5)
-				isTouch = doRight();
-		}
-		else
-		{
-			if (offsetY <-5 )
-				isTouch = doDown();
-			else if (offsetY>5)
-				isTouch = doUp();
-		}
-//	}
-//	else if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
-//	{
-//
-//		if (abs(offsetX) > abs(offsetY))
-//		{
-//			if (offsetX < -5)
-//				isTouch = doLeft();
-//			else if (offsetX > 5)
-//				isTouch = doRight();
-//		}
-//		else
-//		{
-//			if (offsetY > 5)
-//				isTouch = doDown();
-//			else if (offsetY<-5)
-//				isTouch = doUp();
-//		}
-//	}
+	//	if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32) 
+	//	{
+	if (abs(offsetX) > abs(offsetY))
+	{
+		if (offsetX < -5)
+			isTouch = doLeft();
+		else if (offsetX > 5)
+			isTouch = doRight();
+	}
+	else
+	{
+		if (offsetY <-5 )
+			isTouch = doDown();
+		else if (offsetY>5)
+			isTouch = doUp();
+	}
+	//	}
+	//	else if(CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+	//	{
+	//
+	//		if (abs(offsetX) > abs(offsetY))
+	//		{
+	//			if (offsetX < -5)
+	//				isTouch = doLeft();
+	//			else if (offsetX > 5)
+	//				isTouch = doRight();
+	//		}
+	//		else
+	//		{
+	//			if (offsetY > 5)
+	//				isTouch = doDown();
+	//			else if (offsetY<-5)
+	//				isTouch = doUp();
+	//		}
+	//	}
 	if (isTouch)
 	{
-
-		autoCreatesquareNumber();
+		for(int q=1;q<=gquantity;q++)
+			autoCreatesquareNumber();
 		CheckGameOver();
 	}
 }
@@ -225,9 +224,23 @@ void gamescene::back(Ref* pSender)
 
 void gamescene::autoCreatesquareNumber() 
 {  
+	bool full=true;
+	for (int y = 0; y < mult; y++) 
+	{  
+		for (int x = 0; x < mult; x++) 
+		{  
+			if (squareArr[x][y]->getn() == 0  ) 
+			{  
+				full = false;
+			}  
+		}  
+	}  
+	if(full==true)
+		return;
 
 	int i = rand()%mult;  
 	int j = rand()%mult;  
+
 
 	if (squareArr[i][j]->getn() > 0) 
 	{  
@@ -235,13 +248,14 @@ void gamescene::autoCreatesquareNumber()
 	} 
 	else 
 	{  
-		// 生成2和4的比例
+
 		squareArr[i][j]->setn(CCRANDOM_0_1() * 100 <= squareg ? 2:1);  
 
 		auto action = Sequence::createWithTwoActions(ScaleTo::create(0, 0), ScaleTo::create(0.3f, 1));
 
 		squareArr[i][j]->getsquarecolor()->runAction(action);
 	}  
+
 }  
 
 void gamescene::createsquare(cocos2d::Size size) 
@@ -559,7 +573,7 @@ void gamescene::CheckGameOver()
 
 	if (isGameOver) 
 	{  
-		
+
 
 		auto label1 = LabelTTF::create("GG", "MarkerFelt-Thin", visibleSize.width/5);
 		label1->setPosition(Vec2(origin.x + visibleSize.width/2,

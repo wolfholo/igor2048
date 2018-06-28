@@ -33,6 +33,7 @@ private:
 	int score;
 	int squareSize;
 	int squareg;
+	int gquantity;
 	cocos2d::LabelTTF *snumber;  
 
 	virtual bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *event);

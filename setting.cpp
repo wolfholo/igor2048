@@ -3,6 +3,7 @@
 int mode=1;
 int order=3;
 int probaility=10;
+int iquantity=1;
 float size=0.9f;
 
 Scene* setting::createScene()
@@ -58,7 +59,7 @@ bool setting::init()
 	num2->setPosition(Vec2(origin.x + visibleSize.width/2,
 		origin.y + visibleSize.height/5*4 - label1->getContentSize().height*1.5));  
 	this->addChild(num2); 
-	auto label3 = LabelTTF::create("PROBAILITY", "MarkerFelt-Thin", visibleSize.width/7);
+	auto label3 = LabelTTF::create("QUALITY", "MarkerFelt-Thin", visibleSize.width/7);
 	label3->setPosition(Vec2(origin.x + visibleSize.width/2,
 		origin.y + visibleSize.height/5*3 - label3->getContentSize().height/2));
 	this->addChild(label3, 1);
@@ -66,11 +67,11 @@ bool setting::init()
 	num3->setPosition(Vec2(origin.x + visibleSize.width/2,
 		origin.y + visibleSize.height/5*3 - label1->getContentSize().height*1.5));  
 	this->addChild(num3); 
-	auto label4 = LabelTTF::create("SIZE", "MarkerFelt-Thin", visibleSize.width/7);
+	auto label4 = LabelTTF::create("QUANTITY", "MarkerFelt-Thin", visibleSize.width/7);
 	label4->setPosition(Vec2(origin.x + visibleSize.width/2,
 		origin.y + visibleSize.height/5*2 - label4->getContentSize().height/2));
 	this->addChild(label4, 1);
-	auto num4 = cocos2d::LabelTTF::create(__String::createWithFormat("%3.2f", size)->getCString(), "MarkerFelt-Thin", visibleSize.width/7);  
+	auto num4 = cocos2d::LabelTTF::create(__String::createWithFormat("%i", iquantity)->getCString(), "MarkerFelt-Thin", visibleSize.width/7);  
 	num4->setPosition(Vec2(origin.x + visibleSize.width/2,
 		origin.y + visibleSize.height/5*2 - label1->getContentSize().height*1.5));  
 	this->addChild(num4); 
@@ -139,8 +140,8 @@ void setting::probailitym(Ref* pSender)
 void setting::sizem(Ref* pSender)
 {
 	MenuItem * item = (MenuItem*)pSender;
-	if(size>=0.5)
-	size-=0.05f;
+	if(iquantity>1)
+	iquantity--;
 		auto mw = setting::createScene();
 	Director::getInstance()->replaceScene(mw);
 }
@@ -172,8 +173,8 @@ void setting::probailityp(Ref* pSender)
 void setting::sizep(Ref* pSender)
 {
 	MenuItem * item = (MenuItem*)pSender;
-	if(size<1)
-	size+=0.05f;
+	if(iquantity<order)
+	iquantity++;
 		auto mw = setting::createScene();
 	Director::getInstance()->replaceScene(mw);
 }

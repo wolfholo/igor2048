@@ -7,6 +7,7 @@
 extern int mode;
 extern int order;
 extern int probaility;
+extern int iquantity;
 extern float size;
 
 class setting : public cocos2d::Layer
